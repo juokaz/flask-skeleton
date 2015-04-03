@@ -1,0 +1,21 @@
+{% extends "email/layout.html" %}
+
+{% block content %}
+<table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td class="content-block">
+            {{ message.text }}
+        </td>
+    </tr>
+    <tr>
+        <td class="content-block">
+            <a href="{{ base_url }}{{ message.link }}" class="btn-primary">View it</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="content-block">
+            &mdash; Example.com
+        </td>
+    </tr>
+</table>
+{% endblock %}

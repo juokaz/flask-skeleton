@@ -1,0 +1,123 @@
+{% macro render_field(field, label_visible=true) -%}
+{%- with required = "required" if kwargs['required'] or field.flags.required else False -%}
+<div class="row">
+    <div class="form-group {% if field.errors %}has-error{% endif %} {% if required %}required{% endif %} {{ kwargs.pop('class_', '') }}">
+        {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
+            <label for="{{ field.id }}" class="control-label col-sm-2">{{ field.label.text }}</label>
+        {% endif %}
+        <div class="col-sm-10">
+          {% if field.type == 'DateField' %}
+            <div class="input-group date">
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                {{ field(class_='form-control', **kwargs) }}
+            </div>
+          {% else %}
+            {{ field(class_='form-control', **kwargs) }}
+          {% endif %}
+
+          {% if field.errors %}
+              {% for e in field.errors %}
+                  <p class="help-block">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+        </div>
+    </div>
+  </div>
+{%- endwith %}
+{%- endmacro %}
+
+{% macro render_checkbox_field(field) -%}
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <div class="checkbox">
+          <label>
+              {{ field(type='checkbox', **kwargs) }} {{ field.label }}
+          </label>
+      </div>
+    </div>
+  </div>
+{%- endmacro %}
+
+{% macro render_radio_field(field) -%}
+    {% for value, label, _ in field.iter_choices() %}
+        <div class="radio">
+            <label>
+                <input type="radio" name="{{ field.id }}" id="{{ field.id }}" value="{{ value }}">{{ label }}
+            </label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
+
+{%- macro inline_field(field) %}
+{%- with required = "required" if kwargs['required'] or field.flags.required else False -%}
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+{{field(class="form-control",placeholder=field.label.text, required=required, **kwargs)}}
+{% if field.errors %}
+    {% for e in field.errors %}
+        <p class="help-block">{{ e }}</p>
+    {% endfor %}
+{% endif %}
+    </div>
+{%- endwith %}
+{%- endmacro %}
+
+{% macro compact_form(form, action="", method="post", buttons = [('submit', 'default', 'Save')], enctype=None) %}
+<form action="{{action}}" method="{{method}}" {% if enctype %} enctype="{{enctype}}"{% endif %}>
+  {% for f in form %}
+      {% if f.type == 'BooleanField' %}
+          {{ render_checkbox_field(f) }}
+      {% elif f.type == 'RadioField' %}
+          {{ render_radio_field(f) }}
+      {% elif f.type == 'CSRFTokenField' %}
+        {{ form.hidden_tag() }}
+      {% else %}
+          {{ inline_field(f) }}
+      {% endif %}
+  {% endfor %}
+  <div class="form-group">
+  {% for name, type, text in buttons %}
+    <button name="{{name}}" type="submit" class="btn btn-lg btn-{{ type }} btn-block">{{text}}</button>
+  {%- endfor %}
+  </div>
+</form>
+{%- endmacro %}
+
+{% macro quick_form(form, action="", method="post", class="form-horizontal", buttons = [('submit', 'default', 'Save')], enctype=None) %}
+<form action="{{action}}" method="{{method}}" class="{{class}}"{% if enctype %} enctype="{{enctype}}"{% endif %}>
+  {{ form.hidden_tag() }}
+
+  {% for f in form %}
+      {% if f.type == 'BooleanField' %}
+          {{ render_checkbox_field(f) }}
+      {% elif f.type == 'RadioField' %}
+          {{ render_radio_field(f) }}
+      {% else %}
+          {{ render_field(f) }}
+      {% endif %}
+  {% endfor %}
+
+  <div class="form-group">
+    <div class="col-sm-4 col-sm-offset-2">
+  {% for name, type, text in buttons %}
+      <button name="{{name}}" type="submit" class="btn btn-{{ type }}">{{text}}</button>
+  {%- endfor %}
+    </div>
+  </div>
+</form>
+{%- endmacro %}
+
+{% macro filter_form(form, action="", method="get", buttons = [('submit', 'white', 'Filter')], enctype=None) %}
+{% if form._fields|length > 1 %}
+<form action="{{action}}" method="{{method}}" class="form-inline form-filter" {% if enctype %} enctype="{{enctype}}"{% endif %}>
+
+  {%- for field in form %}
+    {% if field.type !='CSRFTokenField' %}
+        {{ inline_field(field) }}
+    {% endif %}
+  {%- endfor %}
+  {% for name, type, text in buttons %}
+    <button type="submit" class="btn btn-{{type}}">{{text}}</button>
+  {%- endfor %}
+</form>
+{% endif %}
+{%- endmacro %}

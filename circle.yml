@@ -1,0 +1,10 @@
+machine:
+  python:
+    version: 3.4.1
+test:
+  override:
+    - nosetests --with-coverage --cover-erase  --cover-package=website --cover-html --cover-html-dir=$CIRCLE_ARTIFACTS
+    - flake8 --exclude=venv website
+dependencies:
+  pre:
+    - pip install -r website/requirements.txt

@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% set active_page = "users" %}
+
+{% block title %}Users{% endblock %}
+
+{% block buttons %}
+<a href="{{ url_for('users.add') }}" class="btn btn-primary"><i class="fa fa-plus"></i> New User</a>
+{% endblock %}
+
+{% block content %}
+{{ wtf.filter_form(filter_form) }}
+
+<table class="table table-condensed table-striped">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Email Confirmed</th>
+      <th>Active</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users.items %}
+    <tr>
+      <td>{{ user.email }}</td>
+      <td>{% if user.confirmed %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</td>
+      <td>{% if user.active %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</td>
+      <td><a href="{{ url_for('users.edit', id=user.id) }}" class="btn btn-link btn-xs"><i class="fa fa-edit"></i></a> <button data-href="{{ url_for('users.delete', id=user.id) }}"  class="btn btn-link btn-xs btn-form btn-delete"><i class="fa fa-trash-o"></i></button></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{{ render_pagination(users) }}
+
+{% endblock %}

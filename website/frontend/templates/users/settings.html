@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Change deatils</h5>
+    </div>
+    <div class="ibox-content">
+        {{ wtf.full_form(user_form, action = request.path, buttons = [('update_user', 'default', 'Save')] ) }}
+    </div>
+</div>
+
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Change password</h5>
+    </div>
+    <div class="ibox-content">
+        {{ wtf.full_form(password_form, action = request.path, buttons = [('change_password', 'default', 'Change password')] ) }}
+    </div>
+</div>
+{% endblock %}

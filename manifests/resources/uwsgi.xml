@@ -1,0 +1,33 @@
+<foo>
+
+<uwsgi id="frontend">
+  <vhost>true</vhost>
+  <socket>127.0.0.1:3031</socket>
+  <venv>/var/www/app/website/venv</venv>
+  <chdir>/var/www/app</chdir>
+  <module>website.frontend:app</module>
+  <env>ENV=prod</env>
+  <logto>/var/log/frontend.log</logto>
+</uwsgi>
+
+<uwsgi id="admin">
+  <vhost>true</vhost>
+  <socket>127.0.0.1:3032</socket>
+  <venv>/var/www/app/website/venv</venv>
+  <chdir>/var/www/app</chdir>
+  <module>website.admin:app</module>
+  <env>ENV=prod</env>
+  <logto>/var/log/admin.log</logto>
+</uwsgi>
+
+<uwsgi id="api">
+  <vhost>true</vhost>
+  <socket>127.0.0.1:3033</socket>
+  <venv>/var/www/app/website/venv</venv>
+  <chdir>/var/www/app</chdir>
+  <module>website.api:app</module>
+  <env>ENV=prod</env>
+  <logto>/var/log/api.log</logto>
+</uwsgi>
+
+</foo>

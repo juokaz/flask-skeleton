@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% set active_page = "users" %}
+
+{% block title %}
+Create New User
+{% endblock %}
+
+{% block content %}
+
+<div class="ibox">
+    <div class="ibox-content">
+        {{ wtf.full_form(form, action = request.path ) }}
+    </div>
+</div>
+{% endblock %}

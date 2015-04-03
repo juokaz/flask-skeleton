@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% set active_page = "users" %}
+
+{% block title %}
+Edit User
+{% endblock %}
+
+{% block buttons %}
+<button data-href="{{ url_for('users.delete', id=user.id) }}" class="btn btn-danger btn-form btn-delete"><i class="fa fa-remove"></i> Delete</button>
+{% endblock %}
+
+{% block content %}
+
+<div class="ibox">
+    <div class="ibox-content">
+        {{ wtf.full_form(form, action = request.path ) }}
+    </div>
+</div>
+{% endblock %}
