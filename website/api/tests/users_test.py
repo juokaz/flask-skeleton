@@ -32,6 +32,14 @@ class UsersTest(TestCase):
 
         self.assertEquals('user@example.com', u.email)
 
+    def test_add_user_invalid(self):
+        data = {}
+        response = self.as_user('post', url_for("users"), data=data)
+
+        self.assert400(response)
+        message = "Error in the email field - This field is required."
+        self.assertEquals(message, response.json['message'])
+
     def test_edit_user(self):
         u = self._create_user()
 
