@@ -53,6 +53,11 @@ class UsersTest(TestCase):
 
         self.assertEqual("usernew@example.com", user.email)
 
+    def test_edit_non_existing_user(self):
+        response = self.as_user('get', url_for("users.edit", id=12131))
+
+        self.assert404(response)
+
     def test_delete_user(self):
         self.as_user('post', url_for("users.delete", id=1))
 
