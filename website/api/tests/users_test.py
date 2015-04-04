@@ -16,12 +16,26 @@ class UsersTest(TestCase):
 
         self.assertEquals(1, len(response.json['_embedded']['users']))
 
+    def test_list_users_paginate(self):
+        for i in range(1, 30):
+            self._create_user(i)
+
+        response = self.as_user('get', url_for("users"))
+
+        self.assertEquals(25, len(response.json['_embedded']['users']))
+        next_link = response.json['_links']['next']['href']
+        self.assertEquals("/users?page=2", next_link)
+
+        response = self.as_user('get', next_link)
+
+        self.assertFalse('next' in response.json['_links'])
+
     def test_view_user(self):
         self._create_user()
 
         response = self.as_user('get', url_for("user", id=1))
 
-        self.assertEquals("user@example.com", response.json['email'])
+        self.assertEquals("user1@example.com", response.json['email'])
 
     def test_add_user(self):
         data = {'email': 'user@example.com'}
@@ -56,13 +70,11 @@ class UsersTest(TestCase):
 
         self.assertEqual(False, u.active)
 
-    def _create_user(self):
+    def _create_user(self, id=1):
         u = User()
-        u.id = 1
-        u.email = "user@example.com"
+        u.id = id
+        u.email = "user%s@example.com" % id
         u.password = "Password"
-        u.type = "manufacturer"
-        u.manufacturer_id = 1
         db.session.add(u)
 
         return u
