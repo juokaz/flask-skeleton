@@ -10,15 +10,21 @@ class UsersTest(TestCase):
     render_templates = False
 
     def test_list_users(self):
-        u = User()
-        u.id = 2
-        u.email = "user2@example.com"
-        db.session.add(u)
+        u = self._create_user()
 
         self.as_user('get', url_for("users.index"))
 
         users = self.get_context_variable("users")
         self.assertEqual(2, users.total)
+        self.assertEqual(u, users.items[0])
+
+    def test_list_users_filter(self):
+        u = self._create_user()
+
+        self.as_user('get', url_for("users.index", email="user2@"))
+
+        users = self.get_context_variable("users")
+        self.assertEqual(1, users.total)
         self.assertEqual(u, users.items[0])
 
     def test_add_user(self):
@@ -79,3 +85,10 @@ class UsersTest(TestCase):
         user = User.query.get(1)
 
         self.assertFalse(user.check_password("passwordnew"))
+
+    def _create_user(self):
+        u = User()
+        u.id = 2
+        u.email = "user2@example.com"
+        db.session.add(u)
+        return u

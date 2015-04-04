@@ -6,13 +6,14 @@ Users
 {% endblock %}
 
 {% block buttons %}
-<a href="{{ url_for('api_keys.index') }}" class="btn btn-white"><i class="fa fa-key"></i> Api Keys</a>
 <a href="{{ url_for('users.add') }}" class="btn btn-primary"><i class="fa fa-plus"></i> New User</a>
 {% endblock %}
 
 {% block content %}
 <div class="ibox">
     <div class="ibox-content">
+        {{ wtf.filter_form(filter_form) }}
+
         <table class="table table-hover">
             <thead>
             <tr>

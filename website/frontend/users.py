@@ -4,6 +4,7 @@ from flask.ext.login import current_user
 from ..utils import templated, handle_404
 
 from .forms import UserForm, PasswordForm
+from .filters import UsersForm
 
 from ..services import users_service
 
@@ -14,8 +15,10 @@ bp = Blueprint('users', __name__)
 @bp.route('/<int:page>')
 @templated()
 def index(page):
-    users = users_service.get_users(current_user).paginate(page, 25)
-    return dict(users=users)
+    filter_form = UsersForm()
+    users = users_service.get_users(current_user, **filter_form.data)
+    users = users.paginate(page, 25)
+    return dict(users=users, filter_form=filter_form)
 
 
 @bp.route('/add', methods=['GET', 'POST'])
