@@ -149,6 +149,15 @@ class AuthTest(TestCase):
 
         self.assertTrue(u.confirmed)
 
+    def test_confirm_bad_token(self):
+        self._create_user()
+
+        token = 'token'
+
+        response = self.client.get(url_for("auth.confirm_email", token=token))
+
+        self.assertRedirects(response, url_for("auth.login"))
+
     def _create_user(self):
         u = User()
         u.id = 1
