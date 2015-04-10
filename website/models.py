@@ -65,7 +65,6 @@ class User(db.Model):
         length = 10
         alphabet = string.ascii_lowercase + string.digits
         key = ''.join(choice(alphabet) for _ in range(length))
-        key = key.replace('=', '_')
         self.password = key
         self.generated_password = key
 
